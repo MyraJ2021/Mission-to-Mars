@@ -19,6 +19,7 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
+        "hemispheres": hemisphere_image_urls,
         "last_modified": dt.datetime.now()
     }
 
@@ -98,6 +99,38 @@ def mars_facts():
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
 
+# Create function scrapng hemisphere data
+        # use Mission_to_Mars_Challenge.py
+def hemisphere():
+    # 1. Use browser to visit the URL 
+    url = 'https://marshemispheres.com/'
+
+    browser.visit(url)
+
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+    for i in range(4):
+        # Create empty dictionary
+        hemispheres = {}
+        # Loop through the full-resolution image URL and click the link
+        browser.find_by_css('a.product-item h3')[i].click()
+        # Find the Sample image anchor tag...
+        element = browser.find_link_by_text('Sample').first
+        #... get the href for img_url and h2.title for title
+        img_url = element['href'] 
+        title = browser.find_by_css("h2.title").text
+        # Save full-resolution image URL string as value for img_url key
+        hemispheres["img_url"] = img_url
+        # Save hemisphere image title as value for title key
+        hemispheres["title"] = title
+        # Add image URL string & hemisphere image title dicts to #2 list
+        hemisphere_image_urls.append(hemispheres)
+        # Navigate back to beginning to get next hemisphere image
+        browser.back()
+     return hemisphere_image_urls
+     
 if __name__ == "__main__":
 
     # If running as script, print scraped data
